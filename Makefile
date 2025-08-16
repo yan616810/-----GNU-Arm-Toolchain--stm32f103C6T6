@@ -49,7 +49,7 @@ vpath %.c $(sort $(dir $(CSRC)))#提取目录，sort去重
 OPTIMIZE = s
 
 ### C Standard level (c89, gnu89, c99 or gnu99)
-CSTD = gnu99
+CSTD = c11
 
 ### Processor type and Thumb(-2) mode for CSRC/ASRC files (YES or NO)
 CPU   = cortex-m3
@@ -125,9 +125,9 @@ ASFLAGS += $(addprefix -D,$(ADEFS)) -Wa,-g -g$(DEBUG)
 ASFLAGS += -ffunction-sections -fdata-sections
 
 # Linker flags
-LDFLAGS += -nostartfiles -Wl,-Map=$(PROJECT_dir).map,--cref,--gc-sections
-# LDFLAGS += -Wl,-Map=$(PROJECT_dir).map,--cref,--gc-sections
-# LDFLAGS += -specs=nano.specs
+# LDFLAGS += -nostartfiles -Wl,-Map=$(PROJECT_dir).map,--cref,--gc-sections
+LDFLAGS += -Wl,-Map=$(PROJECT_dir).map,--cref,--gc-sections
+# LDFLAGS += -specs=nano.specs # 使用类似微库的newlib-nano库
 LDFLAGS += -lc -lgcc
 LDFLAGS += $(patsubst %,-L%,$(LIBDIRS)) $(patsubst %,-l%,$(LIBS))
 LDFLAGS += $(MATHLIB)
