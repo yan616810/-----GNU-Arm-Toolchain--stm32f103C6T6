@@ -6,6 +6,9 @@ PROJECT	= ylad_led_blink
 ### Object output directory
 OBJDIR = obj
 
+# Default target.
+all: version build size #在终端只执行make时，默认执行version build size
+
 ### help
 help : 
 	@echo ***********************************************
@@ -125,7 +128,7 @@ ASFLAGS += $(addprefix -D,$(ADEFS)) -Wa,-g -g$(DEBUG)
 ASFLAGS += -ffunction-sections -fdata-sections
 
 # Linker flags
-# LDFLAGS += -nostartfiles -Wl,-Map=$(PROJECT_dir).map,--cref,--gc-sections
+# LDFLAGS += -nostartfiles -Wl,-Map=$(PROJECT_dir).map,--cref,--gc-sections #-nostartfiles 是 GCC 前端选项，不在 binutils/ld 手册中
 LDFLAGS += -Wl,-Map=$(PROJECT_dir).map,--cref,--gc-sections
 # LDFLAGS += -specs=nano.specs # 使用类似微库的newlib-nano库
 LDFLAGS += -lc -lgcc
@@ -141,8 +144,6 @@ ALL_ASFLAGS = -mcpu=$(CPU) $(THUMBIW) -I. -x assembler-with-cpp $(ASFLAGS)
 
 
 .phony: all version build size elf hex bin lst sym clean help
-# Default target.
-all: version build size
 # Display compiler version information.
 version :
 	@$(CC) --version
