@@ -1,0 +1,65 @@
+/*
+1.与调试器集成：
+            如果你需要调试编译后的程序，可以配置 launch.json 来配合 tasks.json，例如指定 preLaunchTask 为 "Build with mingw32-make"，确保调试前自动编译。
+
+*/
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build with mingw32-make",
+            "type": "shell",
+            "command": "mingw32-make",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Run mingw32-make to build the project based on Makefile."
+        },
+        {
+            "label": "Clean with mingw32-make",
+            "type": "shell",
+            "command": "mingw32-make",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Run mingw32-make clean to remove generated files."
+        },
+        {
+            "label": "Help with mingw32-make",
+            "type": "shell",
+            "command": "mingw32-make",
+            "args": [
+                "help"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "mingw32-make help to display help information."
+        }
+    ]
+}

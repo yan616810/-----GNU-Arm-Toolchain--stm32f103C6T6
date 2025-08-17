@@ -118,9 +118,10 @@ CFLAGS += $(addprefix -W,$(WARNINGS))
 CFLAGS += $(addprefix -I,$(INCDIRS))
 CFLAGS += $(addprefix -D,$(DEFS))
 CFLAGS += -Wp,-MM,-MP,-MT,$(OBJDIR)/$(*F).o,-MF,$(OBJDIR)/$(*F).d#-Wp:表示将后面的选项传递给预处理器 -MM:生成依赖关系 -MP:生成伪目标 -MT:指定目标文件 -MF:指定依赖文件的名称
-CFLAGS += -Wa,-a,-ad,-alms=$(OBJDIR)/$(notdir $(<:.c=.lst))#查看单文件源码与汇编对应
-CFLAGS += -fno-diagnostics-color
+# CFLAGS += -fno-diagnostics-color #禁止错误有颜色
+CFLAGS += -fdiagnostics-color=always #始终使用错误颜色
 CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += -Wa,-a,-ad,-alms=$(OBJDIR)/$(notdir $(<:.c=.lst))#查看单文件源码与汇编对应
 
 
 # Assembler flags

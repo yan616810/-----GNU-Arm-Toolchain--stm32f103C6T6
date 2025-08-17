@@ -20,7 +20,7 @@ DebugConfig/
 *.bat
 *.scvd
 *.lock
-*.json
+# *.json
 *.uvprojx
 # .gitignore
 
