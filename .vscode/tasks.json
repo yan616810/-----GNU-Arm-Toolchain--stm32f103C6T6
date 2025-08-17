@@ -19,9 +19,9 @@
             ],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
-            "detail": "Run mingw32-make to build the project based on Makefile."
+            "detail": "构建整个工程-Run mingw32-make to build the project based on Makefile."
         },
         {
             "label": "Clean with mingw32-make",
@@ -40,7 +40,7 @@
                 "kind": "build",
                 "isDefault": false
             },
-            "detail": "Run mingw32-make clean to remove generated files."
+            "detail": "删除.obj文件-Run mingw32-make clean to remove generated files."
         },
         {
             "label": "Help with mingw32-make",
@@ -59,7 +59,7 @@
                 "kind": "build",
                 "isDefault": false
             },
-            "detail": "mingw32-make help to display help information."
+            "detail": "所有make目标帮助-mingw32-make help to display help information."
         }
     ]
 }
