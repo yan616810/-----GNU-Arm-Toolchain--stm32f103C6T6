@@ -10,7 +10,9 @@
             "label": "Build with mingw32-make",
             "type": "shell",
             "command": "mingw32-make",
-            "args": [],
+            "args": [
+                "-j20"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
