@@ -173,7 +173,7 @@ void Reset_Handler (void)
 	for (d = _sbss; d < _ebss; *d++ = 0) ;
 
 	/* Call newlib C++ global constructors ，典型的比如使用malloc时,newlib怎么会知道你定义的堆的地址在哪！所以要在这里进行初始化*/
-	__libc_init_array();
+	// __libc_init_array();
 
 	/* Start main() with MSP and privileged mode */
 	main();
