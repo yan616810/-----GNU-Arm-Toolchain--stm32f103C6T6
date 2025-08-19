@@ -25,6 +25,10 @@ SECTIONS
 	*(.gcc_except_table)
 	*(.rodata .rodata.*)	/* Read-only data (constants) */
 	*(.gnu.linkonce.r*)
+
+  KEEP (*(.init))   /* 加上这两句之后__libc_init_array()竟然就可以使用了！！！，C library initializers */
+  KEEP (*(.fini))
+
   } > ROM
 
    .ARM.excep :			/* Data table for library exception handling */
@@ -35,6 +39,28 @@ SECTIONS
 
   . = ALIGN(4);
   _etext = .;		/* End of .text section */
+
+  .preinit_array     :
+  {
+    PROVIDE_HIDDEN (__preinit_array_start = .);
+    KEEP (*(.preinit_array*))
+    PROVIDE_HIDDEN (__preinit_array_end = .);
+  } >ROM
+  .init_array :
+  {
+    PROVIDE_HIDDEN (__init_array_start = .);
+    KEEP (*(SORT(.init_array.*)))
+    KEEP (*(.init_array*))
+    PROVIDE_HIDDEN (__init_array_end = .);
+  } >ROM
+  .fini_array :
+  {
+    PROVIDE_HIDDEN (__fini_array_start = .);
+    KEEP (*(SORT(.fini_array.*)))
+    KEEP (*(.fini_array*))
+    PROVIDE_HIDDEN (__fini_array_end = .);
+  } >ROM
+
   _sidata = .;		/* Start of the initialization values of the .data section */
 
 
