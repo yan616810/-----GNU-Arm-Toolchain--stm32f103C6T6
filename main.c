@@ -9,12 +9,19 @@
  * 
  */
 #include "stm32f10x.h"
-uint32_t i = 1000000;
+#include <stdlib.h>
+
 int main(void)
 {
-     // 配置GPIO
+    uint32_t *ptr = (uint32_t *)malloc(100*sizeof(ptr));
+    ptr[0] = 1000000; // 设置ptr指向的内存区域的第一个元素为1000000
+    ptr[1] = 0; // 设置ptr指向的内存区域的第二个元素为0
+    // memset(ptr, 6, 100);
+    
+    // 配置GPIO
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
     {
+
         GPIO_InitTypeDef GPIO_InitStructure;
         GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
         GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
@@ -27,6 +34,7 @@ int main(void)
     {
           // 切换LED状态
         GPIOC->ODR ^= GPIO_Pin_13;
-        for (uint32_t delay = 0; delay < i; delay++);
+        for (uint32_t delay = 0; delay < ptr[0]; delay++);
+        ptr[1]+=1;
     }
 }

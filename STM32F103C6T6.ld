@@ -89,14 +89,22 @@ SECTIONS
 	_ebss = .;	/* End of .bss section */
   } > RAM
 
+  _end = .;/*作用是：标记内存区域的结束地址,常用于 C 库（如 newlib）或你的启动代码里，用来确定堆（heap）或其他动态分配区的起始位置*/
+  /* end = .; */
+
+  /* .heap (NOLOAD) : ALIGN(4)
+  {
+  _heap_start = .;
+  . = . + 2K;
+  _heap_end = .;
+  } > RAM */
+
   .stack (NOLOAD) : ALIGN(8)
   {
 	*(.stack)
 	*(.STACK)
 	. = ALIGN(4);
   } > RAM
-
-  _end = .;/*作用是：标记内存区域的结束地址,常用于 C 库（如 newlib）或你的启动代码里，用来确定堆（heap）或其他动态分配区的起始位置*/
 
 
   /* Stabs debugging sections.  */
