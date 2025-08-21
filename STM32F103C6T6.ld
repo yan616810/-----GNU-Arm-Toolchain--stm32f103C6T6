@@ -20,13 +20,16 @@ SECTIONS
   .text :
   {
 	KEEP(*(.VECTOR))	/* Exception vector table placed at start of flash memory */
+  . = ALIGN(4);
 	*(.text .text.*)	/* Program code */
 	*(.gnu.linkonce.t*)
 	*(.gcc_except_table)
 	*(.rodata .rodata.*)	/* Read-only data (constants) */
 	*(.gnu.linkonce.r*)
 
-  KEEP (*(.init))   /* 加上这两句之后__libc_init_array()竟然就可以使用了！！！，C library initializers */
+/*包含初始化和终止代码，通常是启动代码或 C 库提供的低级初始化/清理函数，包含的是实际的代码或数据*/
+/* 加上这两句之后__libc_init_array()竟然就可以使用了！！！，C library initializers */
+  KEEP (*(.init))   
   KEEP (*(.fini))
 
   } > ROM
@@ -40,6 +43,7 @@ SECTIONS
   . = ALIGN(4);
   _etext = .;		/* End of .text section */
 
+/*包含 C/C++ 运行时初始化和终止函数的指针表，专门用于存储函数指针表，格式固定（每个条目是一个指针）*/
   .preinit_array     :
   {
     PROVIDE_HIDDEN (__preinit_array_start = .);
@@ -61,8 +65,8 @@ SECTIONS
     PROVIDE_HIDDEN (__fini_array_end = .);
   } >ROM
 
-  _sidata = .;		/* Start of the initialization values of the .data section */
 
+  _sidata = .;		/* Start of the initialization values of the .data section */
 
   /* .data section has static objects with initial value. It is located in RAM */
   /* but the content is placed to ROM area just below .text section. */
@@ -89,7 +93,7 @@ SECTIONS
 	_ebss = .;	/* End of .bss section */
   } > RAM
 
-  _end = .;/*作用是：标记内存区域的结束地址,常用于 C 库（如 newlib）或你的启动代码里，用来确定堆（heap）或其他动态分配区的起始位置*/
+  _end = .;/*看你自己实现的stubs桩函数_sbrk()中使用的是什么符号标记！作用是：标记内存区域的结束地址,常用于 C 库（如 newlib）或你的启动代码里，用来确定堆（heap）或其他动态分配区的起始位置*/
   /* end = .; */
 
   /* .heap (NOLOAD) : ALIGN(4)
@@ -99,7 +103,7 @@ SECTIONS
   _heap_end = .;
   } > RAM */
 
-  .stack (NOLOAD) : ALIGN(8)
+  .stack (NOLOAD) : ALIGN(8)/*此处使用8字节对齐为了支持浮点数*/
   {
 	*(.stack)
 	*(.STACK)

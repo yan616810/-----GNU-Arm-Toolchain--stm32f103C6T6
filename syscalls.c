@@ -47,47 +47,6 @@ register char * stack_ptr __asm__ ("sp");
 // int	_swiread	(int, void *, size_t);
 // void	initialise_monitor_handles (void);
 
-// /* Register name faking - works in collusion with the linker.  */
-// register long * stack_ptr __asm__ ("sp");
-
-// /* Heap limit returned from SYS_HEAPINFO Angel semihost call.  */
-// unsigned long __heap_limit = 0xcafedead;
-
-
-
-// void * __attribute__((weak))
-// _sbrk (ptrdiff_t incr)
-// {
-//   static long * heap_end;
-//   long *        prev_heap_end;
-
-//   if (heap_end == NULL)
-//     heap_end =  end;
-
-//   prev_heap_end = heap_end;
-
-//   if ((heap_end + incr > stack_ptr)
-//       /* Honour heap limit if it's valid.  */
-//       || ((__heap_limit != 0xcafedead) && (heap_end + incr) > (long *)__heap_limit))
-//     {
-//       /* Some of the libstdc++-v3 tests rely upon detecting
-// 	 out of memory errors, so do not abort here.  */
-// #if 0
-//       extern void abort (void);
-
-//       _write (1, "_sbrk: Heap and stack collision\n", 32);
-
-//       abort ();
-// #else
-//       errno = ENOMEM;
-//       return (void *) -1;
-// #endif
-//     }
-
-//   heap_end += incr;
-
-//   return (void *) prev_heap_end;
-// }
 
 void * _sbrk (ptrdiff_t incr)
 {
