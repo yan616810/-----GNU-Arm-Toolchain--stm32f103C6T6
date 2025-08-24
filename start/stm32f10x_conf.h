@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    I2C/EEPROM/stm32f10x_conf.h 
+  * @file    Project/STM32F10x_StdPeriph_Template/stm32f10x_conf.h 
   * @author  MCD Application Team
   * @version V3.6.0
   * @date    20-September-2021
@@ -64,7 +64,7 @@
   *         that failed. If expr is true, it returns no value.
   * @retval None
   */
-  #define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))
+  #define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))//__FILE__被与编译器预定义的宏，表示当前文件名;__LINE__表示当前行号
 /* Exported functions ------------------------------------------------------- */
   void assert_failed(uint8_t* file, uint32_t line);
 #else

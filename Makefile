@@ -1,58 +1,13 @@
 # 1.Windows 下输出空行的正确方法echo.
 
 ### Project name (also used for output file name)
-PROJECT	= ylad_led_blink
-
-### Object output directory
-OBJDIR = obj
-
-# Default target.
-all: version build size #在终端只执行make时，默认执行version build size
-
-### help
-help : 
-	@echo ***********************************************
-	@echo Available targets:
-	@echo   all       - Build all targets
-	@echo   clean     - Remove all generated files
-	@echo   size      - Display size of the output file
-	@echo   version   - Display compiler version
-	@echo   elf       - Build ELF file
-	@echo   hex       - Build HEX file
-	@echo   bin       - Build BIN file
-	@echo   lst       - Generate listing file
-	@echo   sym       - Generate symbol file
-	@echo ***********************************************
-	@echo *************all .c file with dir**************
-	@echo $(CSRC)
-	@echo ****************all .c file********************
-	@echo $(notdir $(CSRC))
-	@echo *******************obj************************
-	@echo $(COBJ_dir)
-	@echo ***********************************************
-	@echo $(sort $(dir $(CSRC)))
-
-
-### Source files and search directories
-#匹配$(csrc/*.c)文件
-CSRC =	$(wildcard *.c) \
-    	$(wildcard start/*.c) \
-    	$(wildcard SPL/STM32F10x_StdPeriph_Driver/src/*.c) \
-    	$(wildcard SPL/CMSIS/CM3/*.c)
-#匹配$(asrc/*.S)文件
-ASRC	=$(wildcard start/*.S)
-CSRCARM	=
-ASRCARM	=
-
-### Search directories (make uses VPATH to search source files)
-# VPATH   = start/ SPL/STM32F10x_StdPeriph_Driver/src/ SPL/CMSIS/CM3/ #linux只能使用:当分隔符
-vpath %.c $(sort $(dir $(CSRC)))#提取目录，sort去重
-
-### Optimization level (0, 1, 2, 3, g or s)
-OPTIMIZE = s
+PROJECT	= ylad_gps_oled
 
 ### C Standard level (c89, gnu89, c99 or gnu99)
 CSTD = c11
+
+### Optimization level (0, 1, 2, 3, g or s)
+OPTIMIZE = s
 
 ### Processor type and Thumb(-2) mode for CSRC/ASRC files (YES or NO)
 CPU   = cortex-m3
@@ -61,23 +16,51 @@ THUMB = YES
 ### Linker script for the target MCU
 LINKSCRIPT = STM32F103C6T6.ld
 
+### Object output directory
+OBJDIR = obj
+
+# Default target.
+all: version build size #在终端只执行make时，默认执行version build size
+
+
+### Source files and search directories
+#匹配$(csrc/*.c)文件
+CSRC =	\
+		$(wildcard *.c) \
+    	$(wildcard start/*.c) \
+    	$(wildcard SPL/STM32F10x_StdPeriph_Driver/src/*.c) \
+    	$(wildcard SPL/CMSIS/CM3/*.c)
+#匹配$(asrc/*.S)文件
+ASRC	=$(wildcard start/*.S)
+CSRCARM	=
+ASRCARM	=
+
+
+### Include dirs, library dirs and definitions
+DEFS	=
+ADEFS	=
+MATHLIB	= -lm
+LIBS	=
+LIBDIRS	=
+INCDIRS := \
+			start/ \
+			SPL/STM32F10x_StdPeriph_Driver/inc/ \
+			SPL/CMSIS/CM3/ \
+
+
+### Search directories (make uses VPATH to search source files)
+# VPATH   = start/ SPL/STM32F10x_StdPeriph_Driver/src/ SPL/CMSIS/CM3/ #linux只能使用:当分隔符
+vpath %.c $(sort $(dir $(CSRC)))#提取目录，sort去重
+
+
+### Warning controls
+WARNINGS = all extra error unused
+
 ### Output file type (hex, bin or both) and debugger type
 OUTPUT	= hex
 HEXFMT  = ihex
 DEBUG	= dwarf-2#dwarf-3 #dwarf-4 
 
-### Include dirs, library dirs and definitions
-MATHLIB	= -lm
-LIBS	=
-LIBDIRS	=
-INCDIRS :=start/ \
-		  SPL/STM32F10x_StdPeriph_Driver/inc/ \
-		  SPL/CMSIS/CM3/
-DEFS	=
-ADEFS	=
-
-### Warning contorls
-WARNINGS = all extra error unused
 
 ### Programs to build porject
 CC      = arm-none-eabi-gcc
@@ -128,6 +111,7 @@ CFLAGS += -Wa,-a,-ad,-alms=$(OBJDIR)/$(notdir $(<:.c=.lst))#查看单文件源�
 ASFLAGS += $(addprefix -D,$(ADEFS)) -Wa,-g -g$(DEBUG)
 ASFLAGS += -ffunction-sections -fdata-sections
 
+
 # Linker flags
 # LDFLAGS += -nostartfiles -Wl,-Map=$(PROJECT_dir).map,--cref,--gc-sections #-nostartfiles 是 GCC 前端选项，不在 binutils/ld 手册中
 LDFLAGS += -Wl,-Map=$(PROJECT_dir).map,--cref,--gc-sections
@@ -144,14 +128,17 @@ ALL_CFLAGS  = -mcpu=$(CPU) $(THUMBIW) -I. $(CFLAGS)
 ALL_ASFLAGS = -mcpu=$(CPU) $(THUMBIW) -I. -x assembler-with-cpp $(ASFLAGS)
 
 
-.phony: all version build size elf hex bin lst sym clean help
 # Display compiler version information.
 version :
 	@$(CC) --version
+
+
 # Display size of file.
 size:$(PROJECT_dir).elf
 	@echo "-----------------------------"
 	$(SIZE) -A --radix=16 $<
+	@echo "-----------------------------"
+	$(SIZE) -A --radix=10 $<
 	@echo "-----------------------------"
 	$(SIZE) -B --radix=10 $<
 
@@ -173,6 +160,7 @@ $(error "Invalid format: $(OUTPUT)")
 endif
 endif
 endif
+
 
 elf: $(PROJECT_dir).elf
 lst: $(PROJECT_dir).lst
@@ -242,3 +230,30 @@ $(OBJDIR):
 	@if not exist $(OBJDIR) mkdir $(OBJDIR)
 # 包含依赖文件
 -include $(wildcard $(OBJDIR)/*.d)
+
+
+### help
+help : 
+	@echo ***********************************************
+	@echo Available targets:
+	@echo   all       - Build all targets
+	@echo   clean     - Remove all generated files
+	@echo   size      - Display size of the output file
+	@echo   version   - Display compiler version
+	@echo   elf       - Build ELF file
+	@echo   hex       - Build HEX file
+	@echo   bin       - Build BIN file
+	@echo   lst       - Generate listing file
+	@echo   sym       - Generate symbol file
+	@echo ***********************************************
+	@echo *************all .c file with dir**************
+	@echo $(CSRC)
+	@echo ****************all .c file********************
+	@echo $(notdir $(CSRC))
+	@echo *******************obj************************
+	@echo $(COBJ_dir)
+	@echo *******************vpath***********************
+	@echo $(sort $(dir $(CSRC)))
+
+
+.PHONY: all version build size elf hex bin lst sym clean help
